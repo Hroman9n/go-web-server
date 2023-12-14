@@ -17,4 +17,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Build image
+        run: |
+          docker build -t "hub.docker.com/hroman9n/go-web-server:0.0.1" .
       - run: echo "🍏 This job's status is ${{ job.status }}."
