@@ -20,4 +20,12 @@ jobs:
       - name: Build image
         run: |
           docker build -t "hub.docker.com/hroman9n/go-web-server:0.0.1" .
+      - name: Publish image to Dockerhub
+        shell: bash
+        env:
+          DOCKERHUB_LOGIN: ${{ secrets.DOCKERHUB_LOGIN }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          docker login -u "${DOCKERHUB_LOGIN}" -p "${DOCKERHUB_TOKEN}" && \
+          docker push hub.docker.com/hroman9n/go-web-server:0.0.1
       - run: echo "🍏 This job's status is ${{ job.status }}."
