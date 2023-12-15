@@ -8,10 +8,12 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - name: Debug info
-        run: git describe --tags --abbrev=0
       - name: Check out repository code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Debug info
+        run: git describe --tags --abbrev=0
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
