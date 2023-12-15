@@ -20,7 +20,9 @@ import (
 // 	{ID: "3", Title: "Madvillain", Artist: "MF DOOM", Price: 5},
 // }
 
-// func getAlbums() {}
+func root(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "You can use endpoints such '/hello' and '/headers' for test")
+}
 
 func hello(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, "Hello!\n")
@@ -36,6 +38,7 @@ func headers(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	http.HandleFunc("/", root)
 	http.HandleFunc("/hello", hello)
 	http.HandleFunc("/headers", headers)
 
