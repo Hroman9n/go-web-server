@@ -4,7 +4,7 @@ run-name: "New build on ${{ github.run_id }} workflow"
 on:
   push:
     tags:
-      - *.*.*
+      - **
 jobs:
   build-and-publish:
     runs-on: self-hosted
