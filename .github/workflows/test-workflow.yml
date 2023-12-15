@@ -15,9 +15,12 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Get current tag
+        id: get-tag
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
       - name: Build image
         run: |
-          docker build -t "hroman9n/go-web-server:${{ github.ref }}" .
+          docker build -t "hroman9n/go-web-server:${{ steps.get-tag.outputs.tag }}" .
       - name: Publish image to Dockerhub
         shell: bash
         env:
@@ -25,4 +28,4 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           docker login -u "${DOCKERHUB_LOGIN}" -p "${DOCKERHUB_TOKEN}" && \
-          docker push hroman9n/go-web-server:${{ github.ref }}
+          docker push hroman9n/go-web-server:${{ steps.get-tag.outputs.tag }}
