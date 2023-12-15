@@ -1,24 +1,25 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-// Структура альбомов
-// type album struct {
-// 	ID     string  `json:"id"`
-// 	Title  string  `json:"title"`
-// 	Artist string  `json:"artist"`
-// 	Price  float64 `json:"price"`
-// }
+// Albums structure
+type album struct {
+	ID     string  `json:"id"`
+	Title  string  `json:"title"`
+	Artist string  `json:"artist"`
+	Price  float64 `json:"price"`
+}
 
-// TODO: Тестовые данные
-// var albums = []album{
-// 	{ID: "1", Title: "IGOR", Artist: "Tyler, The creator", Price: 3.99},
-// 	{ID: "2", Title: "Ethernal blue", Artist: "Spiritbox", Price: 2.5},
-// 	{ID: "3", Title: "Madvillain", Artist: "MF DOOM", Price: 5},
-// }
+// Initial data
+var albums = []album{
+	{ID: "1", Title: "IGOR", Artist: "Tyler, The creator", Price: 3.99},
+	{ID: "2", Title: "Ethernal blue", Artist: "Spiritbox", Price: 2.5},
+	{ID: "3", Title: "Madvillain", Artist: "MF DOOM", Price: 5},
+}
 
 func root(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "You can use endpoints such '/hello' and '/headers' for test")
@@ -55,9 +56,16 @@ func apiAlbum(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", root)
-	http.HandleFunc("/hello", hello)
-	http.HandleFunc("/headers", headers)
+	mux := http.NewServeMux()
 
-	http.ListenAndServe(":80", nil)
+	// Static URLs
+	mux.HandleFunc("/", root)
+	mux.HandleFunc("/hello", hello)
+	mux.HandleFunc("/headers", headers)
+
+	// Route URLs
+	albumsApiUrl := "/api/albums/"
+	mux.Handle(albumsApiUrl, http.StripPrefix(albumsApiUrl, http.HandlerFunc(apiAlbum)))
+
+	http.ListenAndServe(":80", mux)
 }
