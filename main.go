@@ -37,6 +37,23 @@ func headers(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func apiAlbum(w http.ResponseWriter, req *http.Request) {
+	rId := req.URL.Path
+	var retData = []album{}
+	if len(rId) > 0 {
+		for _, a := range albums {
+			if a.ID == rId {
+				retData = append(retData, a)
+			}
+		}
+	} else {
+		retData = albums
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(retData)
+}
+
 func main() {
 	http.HandleFunc("/", root)
 	http.HandleFunc("/hello", hello)
