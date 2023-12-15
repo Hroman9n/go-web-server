@@ -2,7 +2,9 @@
 name: Build and publish new image
 run-name: "New build on ${{ github.run_id }} workflow"
 on:
-  - push
+  push:
+    tags:
+      - *.*.*
 jobs:
   build-and-publish:
     runs-on: self-hosted
@@ -10,18 +12,12 @@ jobs:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
       - name: Check out repository code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 100
-          fetch-tags: true
-      - name: Debug info
-        run: git describe --tags --abbrev=0
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
       - name: Build image
         run: |
-          docker build -t "hroman9n/go-web-server:0.0.1" .
+          docker build -t "hroman9n/go-web-server:${{ github.ref }}" .
       - name: Publish image to Dockerhub
         shell: bash
         env:
@@ -29,4 +25,4 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           docker login -u "${DOCKERHUB_LOGIN}" -p "${DOCKERHUB_TOKEN}" && \
-          docker push hroman9n/go-web-server:0.0.1
+          docker push hroman9n/go-web-server:${{ github.ref }}
